@@ -117,7 +117,7 @@ create table bookings (
   -- checked in application code before the insert.
   exclude using gist (
     barber_id with =,
-    tsrange(starts_at, ends_at) with &&
+    tstzrange(starts_at, ends_at) with &&
   ) where (status in ('PENDING', 'CONFIRMED'))
 );
 

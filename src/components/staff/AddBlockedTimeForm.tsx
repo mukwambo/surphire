@@ -3,7 +3,7 @@
 import { useRef, useTransition } from "react";
 import { Field, TextInput } from "@/components/ui/Field";
 import { Button } from "@/components/ui/Button";
-import { createBlockedTime } from "@/app/staff/blocked-times/actions";
+import { createBlockedTime } from "@/app/staff/(protected)/blocked-times/actions";
 
 export function AddBlockedTimeForm({ barberId, timezone }: { barberId: string; timezone: string }) {
   const formRef = useRef<HTMLFormElement>(null);

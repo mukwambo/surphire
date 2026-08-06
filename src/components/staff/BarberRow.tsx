@@ -2,7 +2,7 @@
 
 import { useTransition } from "react";
 import { Button } from "@/components/ui/Button";
-import { toggleBarberStatus } from "@/app/staff/barbers/actions";
+import { toggleBarberStatus } from "@/app/staff/(protected)/barbers/actions";
 import type { Barber } from "@/lib/supabase/database.types";
 
 export function BarberRow({ barber }: { barber: Barber }) {

@@ -3,7 +3,7 @@
 import { useRef, useTransition } from "react";
 import { Field, TextInput } from "@/components/ui/Field";
 import { Button } from "@/components/ui/Button";
-import { createBarber } from "@/app/staff/barbers/actions";
+import { createBarber } from "@/app/staff/(protected)/barbers/actions";
 
 export function AddBarberForm() {
   const formRef = useRef<HTMLFormElement>(null);

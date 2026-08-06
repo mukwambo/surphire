@@ -3,7 +3,7 @@
 import { useRef, useTransition } from "react";
 import { Field, TextInput } from "@/components/ui/Field";
 import { Button } from "@/components/ui/Button";
-import { createService } from "@/app/staff/services/actions";
+import { createService } from "@/app/staff/(protected)/services/actions";
 
 export function AddServiceForm() {
   const formRef = useRef<HTMLFormElement>(null);

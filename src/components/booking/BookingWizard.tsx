@@ -294,7 +294,7 @@ export function BookingWizard({ shopSlug, shopName, timezone, services }: Props)
 
       <TicketCard
         shopName={shopName}
-        status={step === "confirmation" ? "Confirmed" : undefined}
+        status={step === "confirmation" ? "Pending" : undefined}
         reference={reference ?? undefined}
         rows={[
           { label: "Service", value: service?.name ?? null },

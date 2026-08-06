@@ -2,7 +2,7 @@
 
 import { useTransition } from "react";
 import { Button } from "@/components/ui/Button";
-import { setBookingStatus } from "@/app/staff/bookings/[id]/actions";
+import { setBookingStatus } from "@/app/staff/(protected)/bookings/[id]/actions";
 import type { BookingAction } from "@/lib/staff/bookings";
 
 const ACTIONS_FOR_STATUS: Record<string, { label: string; status: BookingAction; variant: "primary" | "secondary" | "danger" }[]> = {

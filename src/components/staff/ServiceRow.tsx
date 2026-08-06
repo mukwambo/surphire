@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import { Field, TextInput } from "@/components/ui/Field";
 import { Button } from "@/components/ui/Button";
-import { toggleServiceStatus, updateService } from "@/app/staff/services/actions";
+import { toggleServiceStatus, updateService } from "@/app/staff/(protected)/services/actions";
 import type { Service } from "@/lib/supabase/database.types";
 
 export function ServiceRow({ service }: { service: Service }) {

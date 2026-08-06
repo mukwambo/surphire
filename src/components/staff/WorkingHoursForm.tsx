@@ -2,7 +2,7 @@
 
 import { useTransition } from "react";
 import { Button } from "@/components/ui/Button";
-import { setWorkingHours } from "@/app/staff/hours/actions";
+import { setWorkingHours } from "@/app/staff/(protected)/hours/actions";
 import type { WorkingHour } from "@/lib/supabase/database.types";
 
 const DAY_LABELS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];

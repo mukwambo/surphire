@@ -4,7 +4,7 @@ import { useTransition } from "react";
 import { format } from "date-fns";
 import { toZonedTime } from "date-fns-tz";
 import { Button } from "@/components/ui/Button";
-import { deleteBlockedTime } from "@/app/staff/blocked-times/actions";
+import { deleteBlockedTime } from "@/app/staff/(protected)/blocked-times/actions";
 import type { BlockedTime } from "@/lib/supabase/database.types";
 
 export function BlockedTimeRow({ blockedTime, timezone }: { blockedTime: BlockedTime; timezone: string }) {
