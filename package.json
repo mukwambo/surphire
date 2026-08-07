@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "NODE_OPTIONS=--experimental-websocket next start",
     "lint": "eslint",
-    "seed": "NODE_OPTIONS=--experimental-websocket tsx scripts/seed.ts"
+    "onboard": "NODE_OPTIONS=--experimental-websocket tsx scripts/onboard-shop.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.4",
