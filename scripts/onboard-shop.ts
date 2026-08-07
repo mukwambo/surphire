@@ -22,7 +22,7 @@ import qrcode from "qrcode";
 import { randomBytes } from "node:crypto";
 
 const HELP = `
-Onboard a new barbershop onto BarberBook.
+Onboard a new barbershop onto Surphire.
 
 Required:
   --name <text>              Shop display name, e.g. "Fresh Cuts"

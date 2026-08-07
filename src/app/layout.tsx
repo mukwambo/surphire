@@ -21,7 +21,7 @@ const mono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "BarberBook",
+  title: "Surphire",
   description: "Book a barber in under a minute.",
 };
 

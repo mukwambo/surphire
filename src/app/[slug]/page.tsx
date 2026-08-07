@@ -12,7 +12,7 @@ export default async function ShopPage({ params }: { params: Promise<{ slug: str
   return (
     <main className="flex-1">
       <header className="border-b border-charcoal px-4 py-6 text-center">
-        <p className="font-mono text-xs tracking-[0.3em] text-brass uppercase">BarberBook</p>
+        <p className="font-mono text-xs tracking-[0.3em] text-brass uppercase">Surphire</p>
         <h1 className="mt-1 font-display text-3xl font-bold text-cream uppercase">{shop.name}</h1>
         {shop.location && <p className="mt-1 text-sm text-smoke">{shop.location}</p>}
       </header>

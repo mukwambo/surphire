@@ -32,7 +32,7 @@ export default function StaffLoginPage() {
     <main className="flex flex-1 flex-col items-center justify-center px-4">
       <div className="w-full max-w-sm">
         <p className="text-center font-mono text-xs tracking-[0.3em] text-brass uppercase">
-          BarberBook
+          Surphire
         </p>
         <h1 className="mt-1 mb-6 text-center font-display text-2xl font-bold uppercase text-cream">
           Staff login

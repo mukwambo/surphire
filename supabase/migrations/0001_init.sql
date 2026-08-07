@@ -1,4 +1,4 @@
--- BarberBook MVP schema
+-- Surphire MVP schema
 -- Maps to Section 3 (Database Architecture) of the product blueprint.
 
 create extension if not exists "pgcrypto";
