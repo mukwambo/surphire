@@ -1,4 +1,5 @@
 import "server-only";
+import { unstable_cache } from "next/cache";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { computeAvailableSlots, EXCLUSION_VIOLATION_CODE } from "./availability";
 import type { Barber, Booking, Customer, Service, Shop } from "@/lib/supabase/database.types";
@@ -6,44 +7,59 @@ import { notify } from "@/lib/notifications";
 
 const ACTIVE_BOOKING_STATUSES = ["PENDING", "CONFIRMED"] as const;
 
-export async function getShopBySlug(slug: string): Promise<Shop | null> {
-  const supabase = createAdminClient();
-  const { data, error } = await supabase
-    .from("shops")
-    .select("id, owner_id, name, slug, phone, location, timezone, status, created_at")
-    .eq("slug", slug)
-    .eq("status", "active")
-    .maybeSingle();
+// Directory data changes rarely; cache for 60s with tag-based invalidation
+// from the matching staff actions. Tags are per-resource-type, not per-shop,
+// so one shop's edit revalidates all shops' cache for that resource.
+export const getShopBySlug = unstable_cache(
+  async (slug: string): Promise<Shop | null> => {
+    const supabase = createAdminClient();
+    const { data, error } = await supabase
+      .from("shops")
+      .select("id, owner_id, name, slug, phone, location, timezone, status, created_at")
+      .eq("slug", slug)
+      .eq("status", "active")
+      .maybeSingle();
 
-  if (error) throw error;
-  return data;
-}
+    if (error) throw error;
+    return data;
+  },
+  ["shop-by-slug"],
+  { tags: ["shops"], revalidate: 60 },
+);
 
-export async function getActiveServices(shopId: string): Promise<Service[]> {
-  const supabase = createAdminClient();
-  const { data, error } = await supabase
-    .from("services")
-    .select("*")
-    .eq("shop_id", shopId)
-    .eq("status", "active")
-    .order("name");
+export const getActiveServices = unstable_cache(
+  async (shopId: string): Promise<Service[]> => {
+    const supabase = createAdminClient();
+    const { data, error } = await supabase
+      .from("services")
+      .select("*")
+      .eq("shop_id", shopId)
+      .eq("status", "active")
+      .order("name");
 
-  if (error) throw error;
-  return data ?? [];
-}
+    if (error) throw error;
+    return data ?? [];
+  },
+  ["active-services"],
+  { tags: ["services"], revalidate: 60 },
+);
 
-export async function getActiveBarbers(shopId: string): Promise<Barber[]> {
-  const supabase = createAdminClient();
-  const { data, error } = await supabase
-    .from("barbers")
-    .select("*")
-    .eq("shop_id", shopId)
-    .eq("status", "active")
-    .order("display_name");
+export const getActiveBarbers = unstable_cache(
+  async (shopId: string): Promise<Barber[]> => {
+    const supabase = createAdminClient();
+    const { data, error } = await supabase
+      .from("barbers")
+      .select("*")
+      .eq("shop_id", shopId)
+      .eq("status", "active")
+      .order("display_name");
 
-  if (error) throw error;
-  return data ?? [];
-}
+    if (error) throw error;
+    return data ?? [];
+  },
+  ["active-barbers"],
+  { tags: ["barbers"], revalidate: 60 },
+);
 
 /** Calendar day-of-week (0 = Sunday) for a "YYYY-MM-DD" string, independent of timezone conversion. */
 function dayOfWeekFor(date: string): number {
@@ -147,16 +163,17 @@ export async function getAvailability(params: {
       ]
     : await getActiveBarbers(shop.id);
 
+  // Fetch each barber's slots concurrently instead of sequentially.
+  const perBarberSlots = await Promise.all(
+    barbers.map((barber) =>
+      slotsForBarber({ shop, barber, date, durationMinutes: service.duration_minutes }),
+    ),
+  );
+
   const byStart = new Map<string, AvailabilitySlot>();
 
-  for (const barber of barbers) {
-    const slots = await slotsForBarber({
-      shop,
-      barber,
-      date,
-      durationMinutes: service.duration_minutes,
-    });
-    for (const start of slots) {
+  barbers.forEach((barber, i) => {
+    for (const start of perBarberSlots[i]) {
       const key = start.toISOString();
       if (!byStart.has(key)) {
         byStart.set(key, {
@@ -166,7 +183,7 @@ export async function getAvailability(params: {
         });
       }
     }
-  }
+  });
 
   return Array.from(byStart.values()).sort((a, b) => a.startsAt.localeCompare(b.startsAt));
 }

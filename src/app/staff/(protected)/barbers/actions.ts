@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, updateTag } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { getStaffShop } from "@/lib/staff/queries";
 
@@ -15,6 +15,7 @@ export async function createBarber(formData: FormData) {
   });
   if (error) throw error;
   revalidatePath("/staff/barbers");
+  updateTag("barbers");
 }
 
 export async function toggleBarberStatus(id: string, nextStatus: "active" | "inactive") {
@@ -22,4 +23,5 @@ export async function toggleBarberStatus(id: string, nextStatus: "active" | "ina
   const { error } = await supabase.from("barbers").update({ status: nextStatus }).eq("id", id);
   if (error) throw error;
   revalidatePath("/staff/barbers");
+  updateTag("barbers");
 }

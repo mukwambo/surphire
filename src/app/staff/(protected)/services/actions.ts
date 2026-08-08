@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, updateTag } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { getStaffShop } from "@/lib/staff/queries";
 
@@ -18,6 +18,7 @@ export async function createService(formData: FormData) {
   });
   if (error) throw error;
   revalidatePath("/staff/services");
+  updateTag("services");
 }
 
 export async function updateService(id: string, formData: FormData) {
@@ -33,6 +34,7 @@ export async function updateService(id: string, formData: FormData) {
     .eq("id", id);
   if (error) throw error;
   revalidatePath("/staff/services");
+  updateTag("services");
 }
 
 export async function toggleServiceStatus(id: string, nextStatus: "active" | "inactive") {
@@ -40,4 +42,5 @@ export async function toggleServiceStatus(id: string, nextStatus: "active" | "in
   const { error } = await supabase.from("services").update({ status: nextStatus }).eq("id", id);
   if (error) throw error;
   revalidatePath("/staff/services");
+  updateTag("services");
 }
