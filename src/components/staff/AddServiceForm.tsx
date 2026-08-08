@@ -29,10 +29,10 @@ export function AddServiceForm() {
       </Field>
       <div className="flex gap-3">
         <Field label="Price (KES)">
-          <TextInput name="price" type="number" step="0.01" defaultValue={0} required />
+          <TextInput name="price" type="number" step="0.01" placeholder="500" required />
         </Field>
         <Field label="Duration (min)">
-          <TextInput name="duration_minutes" type="number" defaultValue={30} required />
+          <TextInput name="duration_minutes" type="number" placeholder="30" required />
         </Field>
       </div>
       <Button type="submit" disabled={isPending} className="self-start">

@@ -51,6 +51,22 @@ export function BookingWizard({ shopSlug, shopName, timezone, services }: Props)
     ? format(toZonedTime(new Date(selectedSlot.startsAt), timezone), "EEE d MMM, h:mm a")
     : null;
 
+  // Group slots by time of day so a busy schedule reads as three short lists
+  // instead of one long wall of identical buttons.
+  const slotGroups = useMemo(() => {
+    const groups = [
+      { label: "Morning", slots: [] as SlotDTO[] },
+      { label: "Afternoon", slots: [] as SlotDTO[] },
+      { label: "Evening", slots: [] as SlotDTO[] },
+    ];
+    for (const slot of slots ?? []) {
+      const hour = toZonedTime(new Date(slot.startsAt), timezone).getHours();
+      const group = hour < 12 ? groups[0] : hour < 17 ? groups[1] : groups[2];
+      group.slots.push(slot);
+    }
+    return groups;
+  }, [slots, timezone]);
+
   async function chooseService(s: ServiceDTO) {
     setService(s);
     setStep("barber");
@@ -208,15 +224,27 @@ export function BookingWizard({ shopSlug, shopName, timezone, services }: Props)
               <EmptyState label="No open slots that day. Try another date." />
             )}
             {!loading && slots && slots.length > 0 && (
-              <div className="flex flex-wrap gap-2">
-                {slots.map((slot) => (
-                  <SlotChip
-                    key={slot.startsAt}
-                    label={format(toZonedTime(new Date(slot.startsAt), timezone), "h:mm a")}
-                    selected={selectedSlot?.startsAt === slot.startsAt}
-                    onClick={() => chooseSlot(slot)}
-                  />
-                ))}
+              <div className="flex flex-col gap-4">
+                {slotGroups.map(
+                  ({ label, slots: groupSlots }) =>
+                    groupSlots.length > 0 && (
+                      <div key={label} className="flex flex-col gap-2">
+                        <p className="font-mono text-[11px] uppercase tracking-widest text-smoke">
+                          {label}
+                        </p>
+                        <div className="flex flex-wrap gap-2">
+                          {groupSlots.map((slot) => (
+                            <SlotChip
+                              key={slot.startsAt}
+                              label={format(toZonedTime(new Date(slot.startsAt), timezone), "h:mm a")}
+                              selected={selectedSlot?.startsAt === slot.startsAt}
+                              onClick={() => chooseSlot(slot)}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                    ),
+                )}
               </div>
             )}
           </div>
